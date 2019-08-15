@@ -1,0 +1,16 @@
+ChromPlot <- function(mapMrk,mapQtl,mapMk,col='topo',qtlcol='black',mkcol='red'){
+        mapMrk <- as.data.frame(mapMrk)
+        mapMrk <-mapMrk[order(mapMrk$Chr,mapMrk$Position),]
+        plot(0,0,col='white',ylim=c(0.7,max(mapMrk$Chr)),xlim=c(0,max(mapMrk$Position)),xlab='Position(cM)',ylab='Chromosome',axes=FALSE,cex.lab=1.2)
+
+        intDis <- mapMrk$Position- c(0,mapMrk$Position[-nrow(mapMrk)])    # mapMrk[i+1,2]- mapMrk[i,2] 
+        StartChr <-mapMrk$Chr!=c(0,mapMrk$Chr[-nrow(mapMrk)]) 
+        intDis[StartChr] <- mapMrk$Position[StartChr]-0    # mapMrk[2,1]=mapMrk[2,1]-0
+        if (col=='rgb'){
+                intCol <- rgb((sqrt(intDis/max(intDis))),0.4,1)                
+        }  else {intCol <-brewer.pal((ceiling(intDis*8)+1),"YlGnBu")}
+        
+        points(mapMrk$Chr~mapMrk$Position,pch='|',col=intCol,cex=1.5)
+       axis(1,1:max(mapMrk$Position))    
+                
+}
