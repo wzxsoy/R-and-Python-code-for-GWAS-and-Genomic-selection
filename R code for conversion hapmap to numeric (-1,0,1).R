@@ -7,7 +7,7 @@ GAPIT.Numericalization <-
     #Object: To convert character SNP genotpe to numerical (-1,0,1)
     #Output: Coresponding numerical value
     #Authors: Feng Tian and Zhiwu Zhang
-    # Last update: May 30, 2011 
+    # Last update: 8-15-2019 connected two functions(GAPIT.Numericalization) together by Zixiang Wen, and added 'write.csv(GD, file ="Numeric data_-101_aytn.csv")
     ##############################################################################################
     if(bit==1)  {
       x[x=="X"]="N"
