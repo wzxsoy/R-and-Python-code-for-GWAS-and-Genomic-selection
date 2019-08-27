@@ -1,0 +1,18 @@
+????:
+label    one    two
+l2k    12  5
+s1k    23 53
+s2k   21  13
+s3h    25  13
+s5h    37  33
+
+
+
+
+data <- read.table("test",header=TRUE)
+tag <- colnames(data)
+tag <- tag[2:3]
+label <- as.character(data[,1])
+x <- as.matrix(data[,2:3])
+testFig <- barplot(t(x),beside=TRUE,col=c("blue","red"),legend.text=tag,names.arg=label,xlab="test",main="test",ylab="Number")
+text(cex=0.8,x=testFig,y=t(x)+2,xpd=TRUE,lab=t(x))

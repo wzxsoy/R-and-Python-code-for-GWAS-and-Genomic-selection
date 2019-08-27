@@ -1,0 +1,5 @@
+install.packages("pheatmap")
+library(pheatmap)
+data<-read.table("kinheati.txt",header=T,sep="")
+da<-data.matrix(data)
+pheatmap(da)

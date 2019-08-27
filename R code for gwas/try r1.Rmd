@@ -1,0 +1,150 @@
+---
+title: "rrBLUP Notebook"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r}
+library(rrBLUP)
+Markers <- as.matrix(read.table(file="SNPp.txt"), header=F)
+head(Markers)
+Pheno <-as.matrix(read.table(file ="Trait.txt", header=TRUE))
+head(Pheno)
+head (Markers)
+
+```
+
+
+
+Check the dimensions of the matrix
+```{r}
+dim(Markers)
+dim(Pheno)
+```
+
+
+#####
+#what if lots of markers are NA?
+#impute with A.mat
+impute=A.mat(Markers,max.missing=0.5,impute.method="mean",return.imputed=T)
+Markers_impute=impute$imputed
+head(Markers_impute)
+dim(Markers_impute)
+
+#remove markers with more than 50% missing data
+Markers_impute2=Markers_impute[,-c(169,562)]
+dim(Markers_impute)
+dim(Markers_impute2)
+
+
+
+
+#different number of SNP markers
+Marker50 <- Markers[,sample (1:5403,400)]
+
+train= as.matrix(sample(1:478,100))
+test<- sample (setdiff(1:478,train),100)
+Pheno_train=Pheno[train,]
+m_train=Marker50[train,]
+Pheno_valid=Pheno[test,]
+m_valid=Marker50[test,]
+
+#50
+protein=(Pheno_train[,1])
+Protein_answer<-mixed.solve(protein, Z=m_train, K=NULL, SE = FALSE, return.Hinv=FALSE)
+YLD = Protein_answer$u
+e = as.matrix(YLD)
+pred_yield_valid =  m_valid %*% e
+pred_yield=(pred_yield_valid[,1])+Protein_answer$beta
+pred_yield
+yield_valid = Pheno_valid[,1]
+YLD_accuracy <-cor(pred_yield_valid, yield_valid, use="complete" )
+YLD_accuracy 
+
+#end of test of SNP marker
+
+
+
+
+
+
+
+#####
+#######
+#define the training and test populations
+#training-60% validation-40%
+train= as.matrix(sample(1:478,100))
+test<- sample (setdiff(1:478,train),100)
+Pheno_train=Pheno[train,]
+m_train=Markers_impute[train,]
+Pheno_valid=Pheno[test,]
+m_valid=Markers_impute[test,]
+
+########
+protein=(Pheno_train[,1])
+Protein_answer<-mixed.solve(protein, Z=m_train, K=NULL, SE = FALSE, return.Hinv=FALSE)
+YLD = Protein_answer$u
+e = as.matrix(YLD)
+pred_yield_valid =  m_valid %*% e
+pred_yield=(pred_yield_valid[,1])+yield_answer$beta
+pred_yield
+yield_valid = Pheno_valid[,1]
+YLD_accuracy <-cor(pred_yield_valid, yield_valid, use="complete" )
+YLD_accuracy 
+
+PHT_HT=(Pheno_train[,2])
+PHT_HT_answer<-mixed.solve(PHT_HT, Z=m_train, K=NULL, SE = FALSE, return.Hinv=FALSE)
+PHT_HT = PHT_HT_answer$u
+e = as.matrix(PHT_HT)
+pred_PHT_HT_valid =  m_valid %*% e
+PHT_HT_valid = Pheno_valid[,2]
+PHT_HT_accuracy <-cor(pred_PHT_HT_valid, PHT_HT_valid, use="complete" )
+PHT_HT_accuracy 
+
+HD_DATE=(Pheno_train[,3])
+HD_DATE_answer<-mixed.solve(HD_DATE, Z=m_train, SE = FALSE, return.Hinv=FALSE)
+HD_DATE = HD_DATE_answer$u
+e = as.matrix(HD_DATE)
+pred_HD_DATE_valid =  m_valid %*% e
+HD_DATE_valid = Pheno_valid[,3]
+HD_DATE_accuracy <-cor(pred_HD_DATE_valid, HD_DATE_valid, use="complete" )
+HD_DATE_accuracy 
+
+
+#### cross validation for many cycles for yield only
+traits=1
+cycles=100
+accuracy = matrix(nrow=cycles, ncol=traits)
+for(r in 1:cycles)
+{
+train= as.matrix(sample(1:478,350))
+test<- sample (setdiff(1:478,train),100)
+Pheno_train=Pheno[train,]
+m_train=Markers_impute[train,]
+Pheno_valid=Pheno[test,]
+m_valid=Markers_impute[test,]
+
+yield=(Pheno_train[,1])
+yield_answer<-mixed.solve(yield, Z=m_train, K=NULL, SE = FALSE, return.Hinv=FALSE)
+YLD = yield_answer$u
+e = as.matrix(YLD)
+pred_yield_valid =  m_valid %*% e
+pred_yield=(pred_yield_valid[,1])+yield_answer$beta
+pred_yield
+yield_valid = Pheno_valid[,1]
+accuracy[r,1] <-cor(pred_yield_valid, yield_valid, use="complete" )
+}
+mean(accuracy)
+
+write.csv (accuracy, file= "validation350.csv")
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
