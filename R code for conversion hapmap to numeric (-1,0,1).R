@@ -1,11 +1,11 @@
-## The following cod is to convert Hapmap SNP data to numerical (-1,0,1)
+## The following code is to convert Hapmap SNP data to numerical (-1,0,1)
 
 ### First step, run the following two functions:GAPIT.Numericalization and GAPIT.HapMap
 
 GAPIT.Numericalization <-
   function(x,bit=2,effect="Add",impute="None", Create.indicator = FALSE, Major.allele.zero = FALSE, byRow=TRUE){
     #Object: To convert character SNP genotpe to numerical (-1,0,1)
-    #Output: Coresponding numerical value
+    #Output: Coresponding numerical values
     #Authors: Feng Tian and Zhiwu Zhang
     # Last update: 8-15-2019 connected two functions(GAPIT.Numericalization) together by Zixiang Wen, and added 'write.csv(GD, file ="Numeric data_-101_aytn.csv")
     ##############################################################################################
